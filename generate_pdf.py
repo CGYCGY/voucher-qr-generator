@@ -31,11 +31,11 @@ def resize_and_arrange_images(images_folder, output_folder, output_pdf, max_heig
     files = os.listdir(images_folder)
     files.sort(key=lambda x: os.path.getctime(os.path.join(images_folder, x)))
 
-    # Initialize position variables
-    position_x, position_y = 0, height
-
     # Convert max_height_cm to points (1 cm = 28.35 points)
     max_height = max_height_cm * 28.35
+
+    # Initialize position variables
+    position_x, position_y = 0, height - max_height
 
     # Loop through each image file
     for count, file in enumerate(files, 1):
