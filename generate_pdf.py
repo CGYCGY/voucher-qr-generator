@@ -1,6 +1,14 @@
 import os
 from configparser import ConfigParser
 
+# Import Tkinter-related modules conditionally
+try:
+    import tkinter as tk
+    from tkinter import filedialog
+except ImportError:
+    tk = None
+    filedialog = None
+
 from PIL import Image
 from reportlab.lib.pagesizes import A4, A3, portrait, landscape
 from reportlab.pdfgen import canvas
@@ -66,16 +74,25 @@ def resize_and_arrange_images(images_folder, output_folder, output_pdf, max_heig
     print(f'PDF generated and saved to {output_path}')
 
 
-if __name__ == '__main__':
+def generate():
     # read config
-    CONFIG = ConfigParser()
-    CONFIG.read('config.ini')
-    MAX_HEIGHT_CM = CONFIG.getfloat('printing', 'voucher_height')
-    VOUCHER_FOLDER = CONFIG.get('printing', 'voucher_folder')
-    PDF_FOLDER = CONFIG.get('printing', 'pdf_folder')
-    PDF_NAME = CONFIG.get('printing', 'pdf_name')
-    PDF_NAME = f'{PDF_NAME}.pdf'
-    PDF_PAGE_SIZE = CONFIG.get('printing', 'pdf_page_size')
-    ORIENTATION = CONFIG.get('printing', 'pdf_orientation')
+    config = ConfigParser()
+    config.read('config.ini')
+    max_height_cm = config.getfloat('printing', 'voucher_height')
+    voucher_folder = config.get('printing', 'voucher_folder')
+    pdf_folder = config.get('printing', 'pdf_folder')
+    pdf_name = config.get('printing', 'pdf_name')
+    pdf_name = f'{pdf_name}.pdf'
+    pdf_page_size = config.get('printing', 'pdf_page_size')
+    orientation = config.get('printing', 'pdf_orientation')
 
-    resize_and_arrange_images(VOUCHER_FOLDER, PDF_FOLDER, PDF_NAME, MAX_HEIGHT_CM, PDF_PAGE_SIZE, ORIENTATION)
+    resize_and_arrange_images(voucher_folder, pdf_folder, pdf_name, max_height_cm, pdf_page_size, orientation)
+
+
+if __name__ == "__main__":
+    if tk is not None:
+        # Tkinter-related code here (if needed)
+        pass
+    else:
+        # Script is running without Tkinter (e.g., as an executable)
+        generate()  # Call the generate function directly

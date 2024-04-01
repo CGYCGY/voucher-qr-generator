@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "coffeeqrgenerator"
+name = "voucher-qr-generator"
 version = "0.1.0"
 description = ""
 authors = ["Cheong Gwen Yit <cgyyit@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "~3.11"
 gspread = "^6.1.0"
 google-api-python-client = "^2.124.0"
 pyqrcode = "^1.2.1"
@@ -17,6 +17,12 @@ pillow = "^10.3.0"
 pypng = "^0.20220715.0"
 reportlab = "^4.1.0"
 
+
+[tool.poetry.group.dev.dependencies]
+pyinstaller = "^6.5.0"
+
+[tool.poetry.scripts]
+build = "my_package.pyinstaller:install"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,6 +1,9 @@
 qrcode
 voucher
 printing
+build
+dist
 config.ini
 credentials.json
 token.pickle
+gui.spec
