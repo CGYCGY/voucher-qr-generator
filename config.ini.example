@@ -29,3 +29,9 @@ position_y=
 300=
 1000=
 5000=
+
+[printing]
+voucher_height=
+voucher_folder=
+pdf_folder=
+pdf_name=
