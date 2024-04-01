@@ -2,18 +2,23 @@ import os
 from configparser import ConfigParser
 
 from PIL import Image
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import portrait, landscape, A4
 from reportlab.pdfgen import canvas
 
 
-# Function to resize and arrange images on A4 paper
-def resize_and_arrange_images(images_folder, output_folder, output_pdf, max_height=3.36):
-    # Define A4 paper size
-    width, height = A4
+# Function to resize and arrange images on A4 paper with adjustable orientation
+def resize_and_arrange_images(images_folder, output_folder, output_pdf, max_height=3.36, orientation='portrait'):
+    # Define page size based on orientation
+    if orientation == 'landscape':
+        width, height = landscape(A4)
+        pagesize = landscape(A4)
+    else:
+        width, height = portrait(A4)
+        pagesize = portrait(A4)
 
     # Create a new PDF file in the printing folder
     output_path = os.path.join(output_folder, output_pdf)
-    c = canvas.Canvas(output_path, pagesize=A4)
+    c = canvas.Canvas(output_path, pagesize=pagesize)
 
     # List all files in the images folder
     files = os.listdir(images_folder)
@@ -29,7 +34,7 @@ def resize_and_arrange_images(images_folder, output_folder, output_pdf, max_heig
             # Open the image file
             img = Image.open(os.path.join(images_folder, file))
 
-            # Resize the image
+            # Resize the image to the specified height
             new_height = max_height * 37.79527559  # Convert cm to points (1 cm = 37.79527559 points)
             ratio = new_height / float(img.size[1])
             new_width = int(float(img.size[0]) * float(ratio))
@@ -61,5 +66,6 @@ if __name__ == '__main__':
     PDF_FOLDER = CONFIG.get('printing', 'pdf_folder')
     PDF_NAME = CONFIG.get('printing', 'pdf_name')
     PDF_NAME = f'{PDF_NAME}.pdf'
+    ORIENTATION = CONFIG.get('printing', 'pdf_orientation')
 
-    resize_and_arrange_images(VOUCHER_FOLDER, PDF_FOLDER, PDF_NAME, MAX_HEIGHT)
+    resize_and_arrange_images(VOUCHER_FOLDER, PDF_FOLDER, PDF_NAME, MAX_HEIGHT, ORIENTATION)
