@@ -1,3 +1,8 @@
+[google_spreadsheet]
+id=
+sheet_name=
+row_start=
+
 [google_drive]
 qr_folder_id=
 

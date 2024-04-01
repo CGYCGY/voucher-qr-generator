@@ -94,7 +94,17 @@ def upload_to_drive(credentials, file_path, folder_id, file_name):
 
 # Write Serial Number, Price, QR code, and Google Form link to the Google Sheet
 def write_to_sheet(credentials, config: ConfigParser, template_rows, base_image_folder, output_image_folder):
+    spreadsheet_id = config.get('google_spreadsheet', 'id')  # Spreadsheet ID in Google Sheet
+    sheet_name = config.get('google_spreadsheet', 'sheet_name')  # Spreadsheet Sheet Name in Google Sheet
+    sheet_row_start = config.get('google_spreadsheet', 'row_start')  # Spreadsheet Start Row in Google Sheet
     qr_folder_id = config.get('google_drive', 'qr_folder_id')  # QR code folder ID in Google Drive
+
+    sheet_row_end = chr(ord(sheet_row_start) + 2)
+
+    service = build('sheets', 'v4', credentials=credentials)
+    sheet = service.spreadsheets()
+
+    values = []
     total_num_rows = 0
     record_log = []
     for template, num_rows in template_rows.items():
@@ -116,12 +126,23 @@ def write_to_sheet(credentials, config: ConfigParser, template_rows, base_image_
             overlay_qr_url = upload_to_drive(credentials, output_image_path, qr_folder_id,
                                              output_image_path.split('/')[-1])
 
+            value = [f'="{serial_number}"', price, overlay_qr_url]
+            values.append(value)
             total_num_rows += 1
 
-        record = f'{num_rows} rows for {template} uploaded to Google Drive.'
+        record = f'{num_rows} rows for {template} written to the Google Sheet.'
         record_log.append(record)
         print(record)
 
+    last_row = len(sheet.values().get(spreadsheetId=spreadsheet_id, range=sheet_name).execute().get('values', [])) + 1
+    range_name = f'{sheet_name}!{sheet_row_start}{last_row}:{sheet_row_end}{last_row + total_num_rows - 1}'  # Add new rows starting from the last row
+    value_range_body = {'values': values}
+    request = sheet.values().update(
+        spreadsheetId=spreadsheet_id, range=range_name,
+        valueInputOption='USER_ENTERED', body=value_range_body)
+
+    response = request.execute()
+    print(response)
     print('\nRecord:')
     [print(value) for value in record_log]
 
