@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "coffeeqrgenerator"
+version = "0.1.0"
+description = ""
+authors = ["Cheong Gwen Yit <cgyyit@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+gspread = "^6.1.0"
+google-api-python-client = "^2.124.0"
+pyqrcode = "^1.2.1"
+pandas = "^2.2.1"
+google-auth-httplib2 = "^0.2.0"
+google-auth-oauthlib = "^1.2.0"
+pillow = "^10.2.0"
+pypng = "^0.20220715.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
