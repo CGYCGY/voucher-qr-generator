@@ -12,7 +12,7 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
 
-# Function to generate a random 25-character Serial Number with symbols (-, ., _, ~)
+# Function to generate a random 25-character Serial Number with symbols (-._~)
 def generate_serial_code(config: ConfigParser):
     lowercase_count = config.getint('serial_code', 'lowercase')
     uppercase_count = config.getint('serial_code', 'uppercase')
@@ -160,26 +160,25 @@ def write_to_sheet(credentials, config: ConfigParser, template_rows, base_image_
     [print(value) for value in record_log]
 
 
-# read config
-CONFIG = ConfigParser()
-CONFIG.read('config.ini')
+if __name__ == '__main__':
+    # read config
+    CONFIG = ConfigParser()
+    CONFIG.read('config.ini')
 
-voucher_50_count = CONFIG.getint('voucher_count', '50')
-voucher_100_count = CONFIG.getint('voucher_count', '100')
-voucher_300_count = CONFIG.getint('voucher_count', '300')
-voucher_1000_count = CONFIG.getint('voucher_count', '1000')
-voucher_5000_count = CONFIG.getint('voucher_count', '5000')
+    voucher_50_count = CONFIG.getint('voucher_count', '50')
+    voucher_100_count = CONFIG.getint('voucher_count', '100')
+    voucher_300_count = CONFIG.getint('voucher_count', '300')
+    voucher_1000_count = CONFIG.getint('voucher_count', '1000')
+    voucher_5000_count = CONFIG.getint('voucher_count', '5000')
 
-# Authenticate and add rows for each template to the sheet
-SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets']
-creds = authenticate(SCOPES)
-template_rows = {
-    'voucher_50': voucher_50_count,
-    'voucher_100': voucher_100_count,
-    'voucher_300': voucher_300_count,
-    'voucher_1000': voucher_1000_count,
-    'voucher_5000': voucher_5000_count
-}
-base_image_folder = 'template'  # Folder where base images are stored
-output_image_folder = 'voucher'  # Folder where output images will be saved
-write_to_sheet(creds, CONFIG, template_rows, base_image_folder, output_image_folder)
+    # Authenticate and add rows for each template to the sheet
+    SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets']
+    creds = authenticate(SCOPES)
+    TEMPLATE_ROWS = {
+        'voucher_50': voucher_50_count,
+        'voucher_100': voucher_100_count,
+        'voucher_300': voucher_300_count,
+        'voucher_1000': voucher_1000_count,
+        'voucher_5000': voucher_5000_count
+    }
+    write_to_sheet(creds, CONFIG, TEMPLATE_ROWS, 'template', 'voucher')
