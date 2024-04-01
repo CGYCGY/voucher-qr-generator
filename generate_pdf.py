@@ -2,19 +2,26 @@ import os
 from configparser import ConfigParser
 
 from PIL import Image
-from reportlab.lib.pagesizes import portrait, landscape, A4
+from reportlab.lib.pagesizes import A4, A3, portrait, landscape
 from reportlab.pdfgen import canvas
 
 
-# Function to resize and arrange images on A4 paper
-def resize_and_arrange_images(images_folder, output_folder, output_pdf, max_height_cm=1.5, orientation='portrait'):
-    # Define page size based on orientation
-    if orientation == 'landscape':
-        width, height = landscape(A4)
-        page_size = landscape(A4)
+# Function to resize and arrange images on A4 or A3 paper
+def resize_and_arrange_images(images_folder, output_folder, output_pdf, max_height_cm=1.5,
+                              pdf_page_size='A4', orientation='portrait'):
+    # Define page size based on orientation and pdf_page_size
+    if pdf_page_size.upper() == 'A3':
+        if orientation == 'landscape':
+            page_size = landscape(A3)
+        else:
+            page_size = portrait(A3)
     else:
-        width, height = portrait(A4)
-        page_size = portrait(A4)
+        if orientation == 'landscape':
+            page_size = landscape(A4)
+        else:
+            page_size = portrait(A4)
+
+    width, height = page_size
 
     # Create a new PDF file in the printing folder
     output_path = os.path.join(output_folder, output_pdf)
@@ -68,6 +75,7 @@ if __name__ == '__main__':
     PDF_FOLDER = CONFIG.get('printing', 'pdf_folder')
     PDF_NAME = CONFIG.get('printing', 'pdf_name')
     PDF_NAME = f'{PDF_NAME}.pdf'
+    PDF_PAGE_SIZE = CONFIG.get('printing', 'pdf_page_size')
     ORIENTATION = CONFIG.get('printing', 'pdf_orientation')
 
-    resize_and_arrange_images(VOUCHER_FOLDER, PDF_FOLDER, PDF_NAME, MAX_HEIGHT_CM, ORIENTATION)
+    resize_and_arrange_images(VOUCHER_FOLDER, PDF_FOLDER, PDF_NAME, MAX_HEIGHT_CM, PDF_PAGE_SIZE, ORIENTATION)
