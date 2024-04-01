@@ -1,4 +1,5 @@
 import os
+from argparse import ArgumentParser
 from configparser import ConfigParser
 
 # Import Tkinter-related modules conditionally
@@ -90,7 +91,11 @@ def generate():
 
 
 if __name__ == "__main__":
-    if tk is not None:
+    parser = ArgumentParser()
+    parser.add_argument('-r', '--run', default=False, action='store_true', help="Run")  # force run
+    args = parser.parse_args()
+
+    if tk is not None and not args.run:
         # Tkinter-related code here (if needed)
         pass
     else:
