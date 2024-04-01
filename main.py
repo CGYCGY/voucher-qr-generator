@@ -98,8 +98,14 @@ def write_to_sheet(credentials, config: ConfigParser, template_rows, base_image_
     sheet_name = config.get('google_spreadsheet', 'sheet_name')  # Spreadsheet Sheet Name in Google Sheet
     sheet_row_start = config.get('google_spreadsheet', 'row_start')  # Spreadsheet Start Row in Google Sheet
     qr_folder_id = config.get('google_drive', 'qr_folder_id')  # QR code folder ID in Google Drive
+    form_link_base = config.get('google_form', 'link')  # Form Link in Google Form
+    form_serial_number_id = config.get('google_form', 'serial_number_id')  # Serial Number ID in Google Form
+    form_price_id = config.get('google_form', 'price_id')  # Price ID in Google Form
 
-    sheet_row_end = chr(ord(sheet_row_start) + 2)
+    if form_link_base:
+        sheet_row_end = chr(ord(sheet_row_start) + 3)
+    else:
+        sheet_row_end = chr(ord(sheet_row_start) + 2)
 
     service = build('sheets', 'v4', credentials=credentials)
     sheet = service.spreadsheets()
@@ -114,7 +120,12 @@ def write_to_sheet(credentials, config: ConfigParser, template_rows, base_image_
 
         for _ in range(num_rows):
             serial_number = generate_serial_code(config)
-            qr = pyqrcode.create(serial_number)
+            if form_link_base:
+                # Generate Google Form link with serial number
+                qr_text = f'{form_link_base}?{form_serial_number_id}={serial_number}&{form_price_id}={price}&srd=true'
+            else:
+                qr_text = f'{serial_number}_{price}'
+            qr = pyqrcode.create(qr_text)
             qr_filename = f'qr_code_{serial_number}.png'  # Save QR code locally
             qr.png(f'qrcode/{qr_filename}', scale=8, quiet_zone=1)  # Generate QR code as PNG file
 
@@ -127,6 +138,8 @@ def write_to_sheet(credentials, config: ConfigParser, template_rows, base_image_
                                              output_image_path.split('/')[-1])
 
             value = [f'="{serial_number}"', price, overlay_qr_url]
+            if form_link_base:
+                value.append(qr_text)
             values.append(value)
             total_num_rows += 1
 

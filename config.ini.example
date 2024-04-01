@@ -6,6 +6,11 @@ row_start=
 [google_drive]
 qr_folder_id=
 
+[google_form]
+link=
+serial_number_id=
+price_id=
+
 [serial_code]
 lowercase=
 uppercase=
