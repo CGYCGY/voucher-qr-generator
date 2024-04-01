@@ -1,8 +1,17 @@
+[google_drive]
+qr_folder_id=
+
 [serial_code]
 lowercase=
 uppercase=
 digit=
 symbol=
+
+[qr_code]
+size_x=
+size_y=
+position_x=
+position_y=
 
 [voucher_count]
 50=

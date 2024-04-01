@@ -1,3 +1,5 @@
 qrcode
 voucher
 config.ini
+credentials.json
+token.pickle
