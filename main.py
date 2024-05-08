@@ -6,6 +6,7 @@ from configparser import ConfigParser
 
 import pyqrcode
 from PIL import Image
+from google.auth.exceptions import RefreshError
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -65,7 +66,13 @@ def authenticate(scopes):
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+            try:
+                creds.refresh(Request())
+            except RefreshError as e:
+                print(f"Error refreshing credentials: {e}")
+                os.remove('token.pickle')
+                print("Deleted token.pickle due to refresh error.")
+                return authenticate(scopes)
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
                 'credentials.json', scopes=scopes)
