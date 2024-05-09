@@ -1,14 +1,5 @@
 import os
-from argparse import ArgumentParser
 from configparser import ConfigParser
-
-# Import Tkinter-related modules conditionally
-try:
-    import tkinter as tk
-    from tkinter import filedialog
-except ImportError:
-    tk = None
-    filedialog = None
 
 from PIL import Image
 from reportlab.lib.pagesizes import A4, A3, portrait, landscape
@@ -90,13 +81,4 @@ def generate():
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser()
-    parser.add_argument('-r', '--run', default=False, action='store_true', help="Run")  # force run
-    args = parser.parse_args()
-
-    if tk is not None and not args.run:
-        # Tkinter-related code here (if needed)
-        pass
-    else:
-        # Script is running without Tkinter (e.g., as an executable)
-        generate()  # Call the generate function directly
+    generate()
