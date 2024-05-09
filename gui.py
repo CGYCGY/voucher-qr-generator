@@ -17,13 +17,32 @@ class ConfigEditorWindow(tk.Tk):
         self.config.read('config.ini')
         self.entries = {}
         section = 'printing'
-        for option in self.config.options(section):
-            label = tk.Label(self.config_editor, text=f"{option.capitalize()}:")
+        for key in self.config.options(section):
+            label = tk.Label(self.config_editor, text=f"{key.replace('_', ' ').title()}:")
             label.pack(anchor="w")
-            entry = tk.Entry(self.config_editor, width=30)
-            entry.insert(0, self.config.get(section, option))
-            entry.pack()
-            self.entries[(section, option)] = entry
+
+            mode = 'text'
+            options = []
+            if key == 'pdf_orientation':
+                mode = 'radio'
+                options = ['portrait', 'landscape']
+            elif key == 'pdf_page_size':
+                mode = 'radio'
+                options = ['A3', 'A4']
+
+            if mode == 'radio':
+                entry = tk.StringVar(value=self.config.get(section, key))
+                radio_frame = tk.Frame(self.config_editor)  # Create a frame for the radio buttons
+                radio_frame.pack(anchor=tk.W)  # Pack the frame with respect to the left side
+
+                for text in options:
+                    tk.Radiobutton(radio_frame, text=text, variable=entry, value=text).pack(side=tk.LEFT)
+            else:
+                entry = tk.Entry(self.config_editor, width=30)
+                entry.insert(0, self.config.get(section, key))
+                entry.pack()
+
+            self.entries[(section, key)] = entry
 
         # Generate button
         generate_button = tk.Button(self, text="Generate", command=self.generate_and_save_config, bg="#ADD8E6")
