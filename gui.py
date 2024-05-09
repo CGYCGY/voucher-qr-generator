@@ -26,7 +26,7 @@ class ConfigEditorWindow(tk.Tk):
             self.entries[(section, option)] = entry
 
         # Generate button
-        generate_button = tk.Button(self, text="Generate", command=generate, bg="#ADD8E6")
+        generate_button = tk.Button(self, text="Generate", command=self.generate_and_save_config, bg="#ADD8E6")
         generate_button.pack(side=tk.BOTTOM, pady=10)
 
         # Save button
@@ -39,6 +39,10 @@ class ConfigEditorWindow(tk.Tk):
             self.config.set(section, option, entry.get())
         with open('config.ini', 'w') as configfile:
             self.config.write(configfile)
+
+    def generate_and_save_config(self):
+        self.save_config()
+        generate()
 
 
 if __name__ == "__main__":
