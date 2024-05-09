@@ -167,17 +167,21 @@ def write_to_sheet(credentials, config: ConfigParser, template_rows, base_image_
     [print(value) for value in record_log]
 
 
-if __name__ == '__main__':
+def generate_voucher():
     # read config
-    CONFIG = ConfigParser()
-    CONFIG.read('config.ini')
+    config = ConfigParser()
+    config.read('config.ini')
 
-    # Get the count of every vouchers
-    TEMPLATE_ROWS = {}
-    for key in CONFIG['voucher_count']:
-        TEMPLATE_ROWS[key] = CONFIG.getint('voucher_count', key)
+    # Get the count of every voucher
+    template_rows = {}
+    for key in config['voucher_count']:
+        template_rows[key] = config.getint('voucher_count', key)
 
     # Authenticate and add rows for each template to the sheet
-    SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets']
-    creds = authenticate(SCOPES)
-    write_to_sheet(creds, CONFIG, TEMPLATE_ROWS, 'template', 'voucher')
+    scopes = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets']
+    creds = authenticate(scopes)
+    write_to_sheet(creds, config, template_rows, 'template', 'voucher')
+
+
+if __name__ == '__main__':
+    generate_voucher()
