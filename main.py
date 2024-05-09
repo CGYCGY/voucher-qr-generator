@@ -172,20 +172,12 @@ if __name__ == '__main__':
     CONFIG = ConfigParser()
     CONFIG.read('config.ini')
 
-    voucher_50_count = CONFIG.getint('voucher_count', '50')
-    voucher_100_count = CONFIG.getint('voucher_count', '100')
-    voucher_300_count = CONFIG.getint('voucher_count', '300')
-    voucher_1000_count = CONFIG.getint('voucher_count', '1000')
-    voucher_5000_count = CONFIG.getint('voucher_count', '5000')
+    # Get the count of every vouchers
+    TEMPLATE_ROWS = {}
+    for key in CONFIG['voucher_count']:
+        TEMPLATE_ROWS[key] = CONFIG.getint('voucher_count', key)
 
     # Authenticate and add rows for each template to the sheet
     SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets']
     creds = authenticate(SCOPES)
-    TEMPLATE_ROWS = {
-        'voucher_50': voucher_50_count,
-        'voucher_100': voucher_100_count,
-        'voucher_300': voucher_300_count,
-        'voucher_1000': voucher_1000_count,
-        'voucher_5000': voucher_5000_count
-    }
     write_to_sheet(creds, CONFIG, TEMPLATE_ROWS, 'template', 'voucher')

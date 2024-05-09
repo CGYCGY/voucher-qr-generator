@@ -24,11 +24,7 @@ position_x=
 position_y=
 
 [voucher_count]
-50=
-100=
-300=
-1000=
-5000=
+voucher_template_name=_count_
 
 [printing]
 voucher_height=
