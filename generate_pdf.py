@@ -56,19 +56,18 @@ def resize_and_arrange_images(images_folder, output_folder, output_pdf, max_heig
             # Resize the image to the specified height
             ratio = max_height / float(img.size[1])
             new_width = int(float(img.size[0]) * float(ratio))
-            img = img.resize((new_width, int(max_height)), Image.Resampling.LANCZOS)
 
             # Calculate position for the next image
-            if position_x + img.size[0] > width:
+            if position_x + new_width > width:
                 position_x = 0
-                position_y -= img.size[1]
+                position_y -= max_height
                 if position_y < 0:
                     c.showPage()
-                    position_y = height - img.size[1]
+                    position_y = height - max_height
 
             # Draw the image on the canvas
-            c.drawInlineImage(img, position_x, position_y, width=img.size[0], height=img.size[1])
-            position_x += img.size[0]
+            c.drawInlineImage(img, position_x, position_y, width=new_width, height=max_height)
+            position_x += new_width
 
     # Save the PDF file
     c.save()
@@ -82,10 +81,10 @@ def generate():
     max_height_cm = config.getfloat('printing', 'voucher_height')
     voucher_folder = config.get('printing', 'voucher_folder')
     pdf_folder = config.get('printing', 'pdf_folder')
-    pdf_name = config.get('printing', 'pdf_name')
-    pdf_name = f'{pdf_name}.pdf'
     pdf_page_size = config.get('printing', 'pdf_page_size')
     orientation = config.get('printing', 'pdf_orientation')
+    pdf_name = config.get('printing', 'pdf_name')
+    pdf_name = f'{pdf_name}_{pdf_page_size}_{orientation}.pdf'
 
     resize_and_arrange_images(voucher_folder, pdf_folder, pdf_name, max_height_cm, pdf_page_size, orientation)
 
